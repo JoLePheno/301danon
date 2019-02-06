@@ -1,0 +1,187 @@
+#!/usr/bin/env python
+
+import sys
+import os
+
+fusion_res = 0
+quick_res = 0
+
+
+def select_sort(tab):  # ok
+    count = 0
+    nb = len(tab)
+    for elem in range(0, nb):
+        lowest = elem
+        for j in range(elem + 1, nb):
+            count += 1
+            if tab[j] < tab[lowest]:
+                lowest = j
+        if min is not elem:
+            tmp = tab[elem]
+            tab[elem] = tab[lowest]
+            tab[lowest] = tmp
+    return count
+
+
+def insertion_sort(tab):  # ok
+    count = 0
+    i = 1
+    while i <= len(tab) - 1:
+        tmptab = [0.0] * (len(tab))
+        elem = tab[i]
+        j = 0
+        while elem >= tab[j] and j < i:
+            count += 1
+            tmptab[j] = tab[j]
+            j += 1
+        if elem <= tab[j] and j < i:
+            count += 1
+        tmptab[j] = elem
+        k = j
+        j += 1
+        while j <= len(tab) - 1:
+            if k != i:
+                tmptab[j] = tab[k]
+                k += 1
+            else:
+                tmptab[j] = tab[j]
+            j += 1
+        i += 1
+        tab = tmptab
+    return count
+
+
+def bubble_sort(tab):  # ok
+    count = 0
+    actual = 0
+    tab.reverse()
+    while actual != len(tab) - 1:
+        for i in range(actual, len(tab) - 1):
+            count += 1
+            if tab[i] > tab[i + 1]:
+                tmp = tab[i + 1]
+                tab[i + 1] = tab[i]
+                tab[i] = tmp
+        actual += 1
+    return count
+
+
+def fusion(left, right):
+    result = []
+    global fusion_res
+    index_left, index_right = 0, 0
+    while index_left < len(left) and index_right < len(right):
+        if left[index_left] <= right[index_right]:
+            result.append(left[index_left])
+            index_left += 1
+        else:
+            result.append(right[index_right])
+            index_right += 1
+        fusion_res += 1
+    if left:
+        result.extend(left[index_left:])
+    if right:
+        result.extend(right[index_right:])
+    return result
+
+
+def fusion_sort(m):  # ok
+    if len(m) <= 1:
+        return m
+    milieu = len(m) // 2
+    left = m[:milieu]
+    right = m[milieu:]
+    left = fusion_sort(left)
+    right = fusion_sort(right)
+    return list(fusion(left, right))
+
+
+def quick_sort(arr): #ok
+    global quick_res
+    if not arr:
+        return []
+    swap = arr[0]
+    i = 1
+    left = []
+    right = []
+    while i < len(arr):
+        if arr[i] < swap:
+            left.append(arr[i])
+        else:
+            right.append(arr[i])
+        quick_res += 1
+        i += 1
+    resultLeft = quick_sort(left)
+    resultRight = quick_sort(right)
+    return resultLeft + [swap] + resultRight
+
+
+def main():
+    global fusion_res
+    global quick_res
+    try:
+        sys.argv[1]
+    except IndexError:
+        exit(84)
+    if sys.argv[1] == "-h":
+        print(
+            "USAGE\n\t./301dannon file\n\n\nDESCRIPTION\n\tfile\tfile that contains the numbers to be sorted, seperated by spaces")
+        exit(0)
+    if len(sys.argv) > 2:
+        print("Error: To much arguments.")
+        exit(84)
+    if os.path.isfile(sys.argv[1]) == 0:
+        print("Error: File not exist.")
+        exit(84)
+    if os.stat(sys.argv[1]).st_size == 0:
+        print("Error: File is empty.")
+        exit(84)
+    f = open(sys.argv[1], "r")
+    content = f.read()
+    try:
+        elements = [float(s) for s in content.split()]
+    except:
+        print("Error: All file is not digit.")
+        exit(84)
+    if len(elements) <= 1:
+        print("{} element".format(len(elements)))
+    else:
+        print("{} elements".format(len(elements)))
+    if len(elements) >= 1000:
+        sys.setrecursionlimit(len(elements) * 3)
+    tmp = elements[:]
+    nb = select_sort(tmp)
+    if nb <= 1:
+        print("select sort: {} comparison".format(nb))
+    else:
+        print("select sort: {} comparisons".format(nb))
+    tmp = elements[:]
+    nb = insertion_sort(tmp)
+    if nb <= 1:
+        print("insertion sort: {} comparison".format(nb))
+    else:
+        print("insertion sort: {} comparisons".format(nb))
+    tmp = elements[:]
+    nb = bubble_sort(tmp)
+    if nb <= 1:
+        print("bubble sort: {} comparison".format(nb))
+    else:
+        print("bubble sort: {} comparisons".format(nb))
+    tmp = elements[:]
+    fusion_sort(tmp)
+    if fusion_res <= 1:
+        print("fusion sort: {} comparison".format(fusion_res))
+    else:
+        print("fusion sort: {} comparisons".format(fusion_res))
+    tmp = elements[:]
+    quick_sort(tmp)
+    nb = quick_res
+    if nb <= 1:
+        print("quicksort: {} comparison".format(nb))
+    else:
+        print("quicksort: {} comparisons".format(nb))
+    return 0
+
+
+if __name__ == '__main__':
+    main()
