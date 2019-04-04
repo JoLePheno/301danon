@@ -6,4 +6,4 @@ steps:
   - name: test
     image: alpine
     commands:
-      - make echo ok
+      - echo ok
