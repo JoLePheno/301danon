@@ -1,0 +1,9 @@
+kind: pipeline
+name: service-prod
+
+steps:
+
+  - name: test
+    image: alpine
+    commands:
+      - make echo ok
